@@ -1,59 +1,202 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏢 Events Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A company internal event management system built with **Laravel 12** and **Filament 3**.
+Manage events, registrations, QR code check-ins and attendance tracking — all in one place.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Admin Panel (`/admin`)
+- Create, edit and delete company events
+- View all registrations per event
+- QR code viewer for each registration
+- Camera-based QR code scanner for check-in (webcam + phone)
+- Dashboard with stats: total events, registrations, attendances
+- Upcoming events and past events with attendance overview
+- User management (create admins and employees)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Employee Panel (`/employee`)
+- Browse upcoming events
+- View full event details
+- Register and unregister for events
+- Personal QR code for check-in
+- Dashboard with personal stats: registrations, attended, upcoming
 
-## Learning Laravel
+### General
+- Single login page at `/login` with role-based redirect
+- Admins → `/admin`, Employees → `/employee`
+- Logout always redirects to `/login`
+- Event status badges: Upcoming, Ongoing, Past
+- Capacity tracking with Full/Available badges
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠 Tech Stack
 
-## Laravel Sponsors
+| Layer | Technology |
+|-------|-----------|
+| Framework | Laravel 12 |
+| Admin UI | Filament 3 |
+| Database | MySQL |
+| QR Generation | simplesoftwareio/simple-qrcode |
+| QR Scanning | html5-qrcode |
+| PHP | 8.2 |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🗄 Database Structure
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+| Table | Description |
+|-------|-------------|
+| `users` | Admins and employees (role: admin/employee) |
+| `events` | Company events with capacity and dates |
+| `registrations` | Employee registrations with unique QR code |
+| `attendances` | Check-in records with timestamp |
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Installation
 
-## Code of Conduct
+### Requirements
+- PHP 8.2+
+- Composer
+- MySQL
+- Node.js & npm
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Steps
 
-## Security Vulnerabilities
+**1 — Clone the repository**
+```bash
+git clone https://github.com/vladimirhristovski/EventsApp.git
+cd EventsApp
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**2 — Install PHP dependencies**
+```bash
+composer install
+```
 
-## License
+**3 — Set up environment**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**4 — Configure database**
+
+Open `.env` and update:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=events_app
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+**5 — Run migrations**
+```bash
+php artisan migrate
+```
+
+**6 — Compile assets**
+```bash
+npm install
+npm run build
+
+# Compile admin theme
+npx tailwindcss@3 --input ./resources/css/filament/admin/theme.css --output ./public/css/filament/admin/theme.css --config ./resources/css/filament/admin/tailwind.config.js --minify
+
+# Compile employee theme
+npx tailwindcss@3 --input ./resources/css/filament/employee/theme.css --output ./public/css/filament/employee/theme.css --config ./resources/css/filament/employee/tailwind.config.js --minify
+```
+
+**7 — Create admin user**
+```bash
+php artisan make:filament-user
+```
+When prompted, make sure to set the role to `admin` via tinker afterwards:
+```bash
+php artisan tinker
+App\Models\User::where('email', 'your@email.com')->update(['role' => 'admin']);
+```
+
+**8 — Start the server**
+```bash
+php artisan serve
+```
+
+Visit `http://127.0.0.1:8000` 🎉
+
+---
+
+## 👤 User Roles
+
+| Role | Access | Panel |
+|------|--------|-------|
+| `admin` | Full access — manage events, users, check-ins | `/admin` |
+| `employee` | Browse events, register, view QR code | `/employee` |
+
+---
+
+## 📱 QR Code Check-in Flow
+
+1. Admin creates an event
+2. Employee registers for the event → unique QR code is generated
+3. Employee opens **My Registrations** → clicks **View QR**
+4. Admin opens **Check-in** page → scans QR with camera or types manually
+5. Attendance is recorded with timestamp
+
+---
+
+## 🔗 Routes
+
+| URL | Description |
+|-----|-------------|
+| `/` | Redirects to `/login` |
+| `/login` | Single login page for all users |
+| `/logout` | Logs out and redirects to `/login` |
+| `/admin` | Admin panel dashboard |
+| `/employee` | Employee panel dashboard |
+
+---
+
+## 📁 Project Structure
+
+```
+app/
+├── Filament/
+│   ├── Resources/          # Admin resources (Event, User, Registration)
+│   ├── Widgets/            # Admin dashboard widgets
+│   ├── Pages/              # Admin pages (CheckIn, Dashboard)
+│   └── Employee/
+│       ├── Resources/      # Employee resources (Event, Registration)
+│       ├── Widgets/        # Employee dashboard widgets
+│       └── Pages/          # Employee pages
+├── Http/
+│   ├── Controllers/Auth/   # Custom login controller
+│   └── Responses/          # Custom logout response
+├── Models/                 # User, Event, Registration, Attendance
+└── Providers/Filament/     # AdminPanelProvider, EmployeePanelProvider
+```
+
+---
+
+## 🧑‍💻 Development
+
+To recompile Filament themes after CSS changes:
+
+```bash
+# Admin theme
+npx tailwindcss@3 --input ./resources/css/filament/admin/theme.css --output ./public/css/filament/admin/theme.css --config ./resources/css/filament/admin/tailwind.config.js --minify
+
+# Employee theme
+npx tailwindcss@3 --input ./resources/css/filament/employee/theme.css --output ./public/css/filament/employee/theme.css --config ./resources/css/filament/employee/tailwind.config.js --minify
+```
+
+---
+
+## 📄 License
+
+This project is for educational purposes.

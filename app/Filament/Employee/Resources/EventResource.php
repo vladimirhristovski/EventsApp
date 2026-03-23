@@ -70,6 +70,7 @@ class EventResource extends Resource
                         Registration::where('user_id', auth()->id())->where('event_id', $record->id)->delete();
                         Notification::make()->title('Unregistered successfully!')->warning()->send();
                     }),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([]);
     }
@@ -78,6 +79,7 @@ class EventResource extends Resource
     {
         return [
             'index' => Pages\ListEvents::route('/'),
+            'view' => Pages\ViewEvent::route('/{record}'),
         ];
     }
 

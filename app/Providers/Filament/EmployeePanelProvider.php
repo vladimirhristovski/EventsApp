@@ -31,7 +31,11 @@ class EmployeePanelProvider extends PanelProvider
             ->login()
             ->brandName('Events Manager — Employee')
             ->colors([
-                'primary' => Color::Green,
+                'primary' => Color::Purple,
+                'danger' => Color::Rose,
+                'success' => Color::Teal,
+                'warning' => Color::Amber,
+                'gray' => Color::Zinc,
             ])
             ->discoverResources(in: app_path('Filament/Employee/Resources'), for: 'App\\Filament\\Employee\\Resources')
             ->discoverPages(in: app_path('Filament/Employee/Pages'), for: 'App\\Filament\\Employee\\Pages')
@@ -54,6 +58,7 @@ class EmployeePanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->theme(asset('css/filament/employee/theme.css'));
     }
 }
