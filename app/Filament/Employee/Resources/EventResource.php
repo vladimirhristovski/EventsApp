@@ -29,6 +29,11 @@ class EventResource extends Resource
                 Event::query()->where('start_date', '>=', now())->orderBy('start_date')
             )
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->height(50)
+                    ->width(80)
+                    ->getStateUsing(fn($record) => $record->image ? asset('storage/' . $record->image) : null)
+                    ->defaultImageUrl('https://placehold.co/80x50?text=No+Image'),
                 Tables\Columns\TextColumn::make('title')->searchable(),
                 Tables\Columns\TextColumn::make('location'),
                 Tables\Columns\TextColumn::make('start_date')->dateTime()->sortable(),

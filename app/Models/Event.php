@@ -16,6 +16,7 @@ class Event extends Model
         'end_date',
         'location',
         'capacity',
+        'image',
         'created_by',
     ];
 

@@ -37,6 +37,13 @@ class EventResource extends Resource
                 ->numeric()
                 ->required()
                 ->minValue(1),
+            Forms\Components\FileUpload::make('image')
+                ->image()
+                ->disk('public')
+                ->directory('events')
+                ->imageResizeMode('cover')
+                ->imageCropAspectRatio('16:9')
+                ->nullable(),
         ]);
     }
 
@@ -44,6 +51,11 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->height(50)
+                    ->width(80)
+                    ->getStateUsing(fn ($record) => $record->image ? asset('storage/' . $record->image) : null)
+                    ->defaultImageUrl('https://placehold.co/80x50?text=No+Image'),
                 Tables\Columns\TextColumn::make('title')->searchable(),
                 Tables\Columns\TextColumn::make('location')->searchable(),
                 Tables\Columns\TextColumn::make('start_date')->dateTime()->sortable(),

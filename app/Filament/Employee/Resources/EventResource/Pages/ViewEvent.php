@@ -17,6 +17,11 @@ class ViewEvent extends ViewRecord
     public function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
+            \Filament\Infolists\Components\ImageEntry::make('image')
+                ->height(300)
+                ->columnSpanFull()
+                ->getStateUsing(fn($record) => $record->image ? asset('storage/' . $record->image) : null)
+                ->visible(fn($record) => $record->image !== null),
             Section::make('Event Details')->schema([
                 TextEntry::make('title')->label('Title'),
                 TextEntry::make('location')->label('Location'),
